@@ -27,15 +27,15 @@ export class EngineService implements OnDestroy {
     // The first step is to get the reference of the canvas element from our HTML document
     this.canvas = canvas.nativeElement;
 
-    // const context: WebGL2RenderingContext = this.canvas.getContext('webgl2', {
-    //   alpha: false
-    // });
+    const context: WebGL2RenderingContext = this.canvas.getContext('webgl2', {
+      alpha: false
+    });
 
     const params: THREE.WebGLRendererParameters = {
       canvas: this.canvas,
       alpha: true,
-      antialias: true
-      // context
+      antialias: true,
+      context
     };
     this.renderer = new THREE.WebGLRenderer(params);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
