@@ -27,32 +27,40 @@ export class EngineService implements OnDestroy {
     // The first step is to get the reference of the canvas element from our HTML document
     this.canvas = canvas.nativeElement;
 
-    this.renderer = new THREE.WebGLRenderer({
+    // const context: WebGL2RenderingContext = this.canvas.getContext('webgl2', {
+    //   alpha: false
+    // });
+
+    const params: THREE.WebGLRendererParameters = {
       canvas: this.canvas,
-      alpha: true,    // transparent background
-      antialias: true // smooth edges
-    });
+      alpha: true,
+      antialias: true
+      // context
+    };
+    this.renderer = new THREE.WebGLRenderer(params);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
     // create the scene
     this.scene = new THREE.Scene();
 
     this.camera = new THREE.PerspectiveCamera(
-      75, window.innerWidth / window.innerHeight, 0.1, 1000
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
     );
     this.camera.position.z = 5;
     this.scene.add(this.camera);
 
     // soft white light
-    this.light = new THREE.AmbientLight( 0x404040 );
+    this.light = new THREE.AmbientLight(0x404040);
     this.light.position.z = 10;
     this.scene.add(this.light);
 
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    this.cube = new THREE.Mesh( geometry, material );
+    this.cube = new THREE.Mesh(geometry, material);
     this.scene.add(this.cube);
-
   }
 
   animate(): void {
@@ -90,6 +98,6 @@ export class EngineService implements OnDestroy {
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
 
-    this.renderer.setSize( width, height );
+    this.renderer.setSize(width, height);
   }
 }
