@@ -1,5 +1,6 @@
 import { ElementRef, Injectable, NgZone, OnDestroy } from '@angular/core';
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,9 @@ export class EngineService implements OnDestroy {
   private camera: THREE.PerspectiveCamera;
   private scene: THREE.Scene;
   private light: THREE.AmbientLight;
+  private controls: OrbitControls;
+
+  private cube: THREE.Mesh;
 
   private frameId: number = null;
 
@@ -42,27 +46,23 @@ export class EngineService implements OnDestroy {
     this.scene = new THREE.Scene();
 
     this.camera = new THREE.PerspectiveCamera(
-      45,
+      75,
       window.innerWidth / window.innerHeight,
-      1,
-      500
+      0.1,
+      1000
     );
-    this.camera.position.set(0, 0, 100);
-    this.camera.lookAt(0, 0, 0);
+    this.camera.position.z = 5;
     this.scene.add(this.camera);
 
-    // soft white light
-    this.light = new THREE.AmbientLight(0x404040);
-    this.light.position.z = 10;
+    this.light = new THREE.HemisphereLight('white', 'brown');
     this.scene.add(this.light);
 
-    const material = new THREE.LineBasicMaterial({ color: 0x0000ff });
-    const geometry = new THREE.Geometry();
-    geometry.vertices.push(new THREE.Vector3(-10, 0, 0));
-    geometry.vertices.push(new THREE.Vector3(0, 10, 0));
-    geometry.vertices.push(new THREE.Vector3(10, 0, 0));
-    const line = new THREE.Line(geometry, material);
-    this.scene.add(line);
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+    this.cube = new THREE.Mesh(geometry, material);
+    this.scene.add(this.cube);
+
+    this.controls = new OrbitControls(this.camera, this.canvas);
   }
 
   animate(): void {
@@ -88,6 +88,8 @@ export class EngineService implements OnDestroy {
       this.render();
     });
 
+    this.cube.rotation.x += 0.01;
+    this.cube.rotation.y += 0.01;
     this.renderer.render(this.scene, this.camera);
   }
 
